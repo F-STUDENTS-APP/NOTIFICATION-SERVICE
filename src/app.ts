@@ -8,8 +8,9 @@ import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import logger from './config/logger';
-import { sendError } from './utils/response';
 import notificationRoutes from './routes/notification.routes';
+import { errorHandler } from '@common/middlewares/error.handler';
+import { healthCheck } from '@common/utils/health';
 
 dotenv.config();
 
@@ -57,19 +58,10 @@ app.get('/', (req: Request, res: Response) => {
   res.redirect('/api-docs');
 });
 
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'OK', service: 'notification-service' });
-});
+app.get('/health', healthCheck('notification-service'));
 
 // Error handling
-app.use(
-  (err: Error & { statusCode?: number }, req: Request, res: Response, _next: NextFunction) => {
-    logger.error(err.stack);
-    const status = err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
-    sendError(res, status, message);
-  }
-);
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
