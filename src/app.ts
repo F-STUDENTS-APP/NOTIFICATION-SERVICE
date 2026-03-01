@@ -9,8 +9,8 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import logger from './config/logger';
 import notificationRoutes from './routes/notification.routes';
-import { errorHandler } from '@common/middlewares/error.handler';
-import { healthCheck } from '@common/utils/health';
+import { errorHandler } from '@microservices/common/middlewares/error.handler';
+import { healthCheck } from '@microservices/common/utils/health';
 
 dotenv.config();
 
